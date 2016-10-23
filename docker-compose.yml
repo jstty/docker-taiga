@@ -1,28 +1,99 @@
-postgres:
-  image: postgres
-  environment:
-    - POSTGRES_PASSWORD=password
+version: '2'
 
-taiga:
-  build: .
-  ports:
-    - 80:80
-    # - 443:443 # To enable SSL, uncomment this line
-  links:
-    - postgres
-  environment:
-    - TAIGA_HOSTNAME=dockerhost
+services:
+  rabbit:
+    image: rabbitmq:3
+    container_name: taiga_rabbit
+    networks:
+      - back-tier
 
-    # TAIGA_SLEEP haults Taiga from starting for 30 seconds,
-    # this gives the database container time to initialize.
-    # If you're using an external database you can remove this.
-    - TAIGA_SLEEP=30
+  redis:
+    image: redis:3
+    container_name: taiga_redis
+    networks:
+      - back-tier
 
-    # - TAIGA_SSL=True # To enable SSL, uncomment this line
+  postgres:
+    image: postgres
+    hostname: postgres
+    container_name: taiga_postgres
+    environment:
+      POSTGRES_DB: taiga
+      POSTGRES_USER: taiga
+      POSTGRES_PASSWORD: password
+    # ports:
+    #   - 5432:5432
+    networks:
+      - back-tier
+    # volumes:
+      # - "${PWD}/database:/var/lib/postgresql/data"
+      # - postgres-data
 
-    # To use an external database, fill in these values and remove
-    # the link to the postgres service.
-    # - TAIGA_DB_NAME=taiga
-    # - TAIGA_DB_HOST=
-    # - TAIGA_DB_USER=taiga
-    # - TAIGA_DB_PASSWORD=password
+  # celery:
+  #   image: celery
+  #   networks:
+  #     - taiga-network
+  #   links:
+  #     - rabbit
+
+  taiga-events:
+    build: docker-taiga-events
+    image: taiga-events
+    container_name: taiga_events
+    networks:
+      - back-tier
+    links:
+      - rabbit
+    extra_hosts:
+      - rabbit:rabbit
+  
+  taiga:
+    build: .
+    container_name: taiga
+    image: taiga
+    ports:
+      - "${TAIGA_PORT}:80"
+      # - 443:443 # To enable SSL, uncomment this line
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - postgres
+      - rabbit
+      - redis
+      # - celery
+      - taiga-events
+    links:
+      - postgres
+      - rabbit
+      - redis
+      # - celery
+      - taiga-events
+    environment:
+      TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"
+      # TAIGA_SLEEP haults Taiga from starting for 30 seconds,
+      # this gives the database container time to initialize.
+      # If you're using an external database you can remove this.
+      TAIGA_SLEEP: 10
+      # TAIGA_SSL=True # To enable SSL, uncomment this line
+      TAIGA_DB_HOST: localhost
+      TAIGA_DB_NAME: taiga
+      TAIGA_DB_USER: taiga
+      TAIGA_DB_PASSWORD: password
+      EMAIL_HOST: ${EMAIL_HOST}
+      GITHUB_URL: "https://github.com/"
+      GITHUB_API_URL: "https://api.github.com/"
+      GITHUB_API_CLIENT_ID: "yourgithubclientid"
+      GITHUB_API_CLIENT_SECRET: "yourgithubclientsecret"
+    # volumes:
+      # This ensures files uploaded to Taiga are not lost when recreating
+      # your taiga container during upgrades
+      # - "${PWD}/media:/usr/src/taiga-back/media"
+
+# volumes:
+#   postgres-data:
+#     driver: local
+
+networks:
+  front-tier:
+  back-tier:

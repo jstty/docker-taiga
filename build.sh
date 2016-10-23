@@ -1,6 +1,8 @@
 #!/bin/bash
 
 export PWD=$(pwd)
+ENV_FILE="./env.sh"
+
 
 # if Mac OSX then set env to docker machine so docker commands work
 if [ "$(uname)" == "Darwin" ]; then
@@ -53,6 +55,23 @@ prompt () {
 	echo $var
 	return 0
 }
+
+if [ -f "${ENV_FILE}" ]; then
+	USE_ENV=$(yesNoPrompt "Yes" "Do use env settings")
+	if [ "$USE_ENV" = "Yes" ]; then
+		source ${USE_ENV};
+
+		echo "--------------------------------------------"
+		echo "Build Services..."
+		echo "--------------------------------------------"
+		docker-compose build
+
+		echo "--------------------------------------------"
+		echo "Creating Containers..."
+		echo "--------------------------------------------"
+		docker-compose create
+	fi
+fi
 
 CLEANUP_CONTAINERS=$(yesNoPrompt "No" "Do you want to stop and remove Taiga services")
 if [ "$CLEANUP_CONTAINERS" = "Yes" ]; then
@@ -121,6 +140,23 @@ echo "Github API URL: $GITHUB_API_URL"
 echo "Github API Client ID: $GITHUB_API_CLIENT_ID"
 echo "Github API Client Secret: $GITHUB_API_CLIENT_SECRET"
 echo "--------------------------------------------"
+
+cat >${ENV_FILE} <<EOL
+export TAIGA_HOST=$TAIGA_HOST
+export TAIGA_PORT=$TAIGA_PORT
+
+export EMAIL_USE_TLS=$EMAIL_USE_TLS
+export EMAIL_HOST=$EMAIL_HOST
+export EMAIL_PORT=$EMAIL_PORT
+export EMAIL_HOST_USER=$EMAIL_HOST_USER
+export EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
+
+export GITHUB_URL=$GITHUB_URL
+export GITHUB_API_URL=$GITHUB_API_URL
+export GITHUB_API_CLIENT_ID=$GITHUB_API_CLIENT_ID
+export GITHUB_API_CLIENT_SECRET=$GITHUB_API_CLIENT_SECRET
+EOL
+
 
 echo "--------------------------------------------"
 echo "Build Services..."

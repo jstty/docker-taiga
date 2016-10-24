@@ -17,15 +17,6 @@ services:
       # - "${PWD}/database:/var/lib/postgresql/data"
       - "${TAIGA_DATA_DIR}/db:/var/lib/postgresql/data"
 
-  docker_mail_server:
-    image: catatnight/postfix
-    container_name: docker_mail_server
-    networks:
-      - back-tier
-    environment:
-      maildomain: "taiga.io"
-      smtp_user: "${EMAIL_HOST_USER}:${EMAIL_HOST_PASSWORD}"
-
   taiga:
     build: .
     container_name: taiga
@@ -38,7 +29,6 @@ services:
       - back-tier
     depends_on:
       - postgres
-      - docker_mail_server
     environment:
       TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"
       # TAIGA_SLEEP haults Taiga from starting for 30 seconds,

@@ -16,3 +16,6 @@ echo "--------------------------------------------"
 echo "Cloning Frontend..."
 echo "--------------------------------------------"
 git clone https://github.com/benhutchins/docker-taiga-events.git docker-taiga-events
+
+mkdir db-data
+mkdir taiga-media

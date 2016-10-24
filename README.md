@@ -5,14 +5,25 @@ Taiga is a project management platform for startups and agile developers & desig
 > [taiga.io](https://taiga.io)
 
 
+# Download the Frontend, Backend and Event code
+```sh
+$ ./init.sh
+```
 
+# Create Images and Containers using Docker Compose:
+```sh
+$ ./build.sh
+```
 
+# Start Containers using Docker Compose:
+```sh
+$ ./start.sh
+```
 
-
-
-
-
-
+# Stop Containers using Docker Compose:
+```sh
+$ ./stop.sh
+```
 
 
 

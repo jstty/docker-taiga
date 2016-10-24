@@ -13,17 +13,15 @@ services:
     #   - 5432:5432
     networks:
       - back-tier
-    # volumes:
+    volumes:
       # - "${PWD}/database:/var/lib/postgresql/data"
-      # - postgres-data
+      - postgres-data:/var/lib/postgresql/data
 
   docker_mail_server:
     image: catatnight/postfix
     container_name: docker_mail_server
     networks:
       - back-tier
-    ports:
-      - ${EMAIL_PORT}:25
     environment:
       maildomain: "taiga.io"
       smtp_user: "${EMAIL_HOST_USER}:${EMAIL_HOST_PASSWORD}"
@@ -64,14 +62,20 @@ services:
       GITHUB_API_URL: "https://api.github.com/"
       GITHUB_API_CLIENT_ID: "yourgithubclientid"
       GITHUB_API_CLIENT_SECRET: "yourgithubclientsecret"
-    # volumes:
+    volumes:
       # This ensures files uploaded to Taiga are not lost when recreating
       # your taiga container during upgrades
-      # - "${PWD}/media:/usr/src/taiga-back/media"
+      - taiga-media:/usr/src/taiga-back/media
 
-# volumes:
-#   postgres-data:
-#     driver: local
+volumes:
+  postgres-data:
+    driver: local
+    driver_opts:
+      device: ./db-data
+  taiga-media:
+    driver: local
+    driver_opts:
+      device: ./taiga-media
 
 networks:
   front-tier:

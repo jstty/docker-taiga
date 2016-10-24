@@ -20,6 +20,13 @@ else
 fi
 
 echo "--------------------------------------------"
-echo "Starting..."
+echo "Starting Containers in background"
 echo "--------------------------------------------"
-docker-compose up "$@"
+docker-compose up -d "$@"
+
+echo "--------------------------------------------"
+echo "Go to: http://${TAIGA_HOST}/login"
+echo "Default Login"
+echo "user: admin"
+echo "pass: 123123"
+echo "--------------------------------------------"

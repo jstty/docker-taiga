@@ -136,6 +136,8 @@ if os.getenv('GITHUB_URL'):
 #########################################
 
 from .celery import *
+BROKER_URL = 'amqp://guest:guest@celery:5672//'
+CELERY_RESULT_BACKEND = 'redis://celery:6379/0'
 CELERY_ENABLED = True
 
 # To use celery in memory

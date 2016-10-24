@@ -29,12 +29,10 @@ services:
       # - "${PWD}/database:/var/lib/postgresql/data"
       # - postgres-data
 
-  # celery:
-  #   image: celery
-  #   networks:
-  #     - taiga-network
-  #   links:
-  #     - rabbit
+  celery:
+    image: celery
+    networks:
+      - back-tier
 
   taiga-events:
     build: docker-taiga-events
@@ -42,10 +40,6 @@ services:
     container_name: taiga_events
     networks:
       - back-tier
-    links:
-      - rabbit
-    extra_hosts:
-      - rabbit:rabbit
   
   taiga:
     build: .
@@ -61,13 +55,7 @@ services:
       - postgres
       - rabbit
       - redis
-      # - celery
-      - taiga-events
-    links:
-      - postgres
-      - rabbit
-      - redis
-      # - celery
+      - celery
       - taiga-events
     environment:
       TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"

@@ -19,6 +19,9 @@ else
 	./build.sh	
 fi
 
+# convert to absolute path
+export TAIGA_DATA_DIR=`cd "$TAIGA_DATA_DIR"; pwd`
+
 echo "--------------------------------------------"
 echo "Starting Containers in background"
 echo "--------------------------------------------"

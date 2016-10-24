@@ -15,6 +15,9 @@ echo "--------------------------------------------"
 
 if [ -f "${ENV_FILE}" ]; then
 	source ${ENV_FILE}
+
+	# convert to absolute path
+	export TAIGA_DATA_DIR=`cd "$TAIGA_DATA_DIR"; pwd`
 	
 	echo "--------------------------------------------"
 	echo "Stop Service Containers"

@@ -88,9 +88,8 @@ if [ "${USE_ENV}" == "Yes" ]; then
 else
 	export TAIGA_PORT=$(prompt "${TAIGA_PORT-8000}" "Frontend Port")
 	export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "$(docker-machine ip)" )
-	
 
-	export EMAIL_HOST=$(prompt "$(docker-machine ip)" "Email Hostname")
+	export EMAIL_HOST=$(prompt "docker_mail_server" "Email Hostname")
 	export EMAIL_PORT=$(prompt "25" "Email Port")
 	export EMAIL_HOST_USER=$(prompt "" "Email Login Username")
 	export EMAIL_HOST_PASSWORD=$(prompt "" "Email Login Password")

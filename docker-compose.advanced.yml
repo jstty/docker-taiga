@@ -1,6 +1,20 @@
 version: '2'
 
 services:
+  rabbit:
+    image: rabbitmq:3
+    container_name: taiga_rabbit
+    networks:
+      - back-tier
+    environment:
+      RABBITMQ_DEFAULT_VHOST: taiga
+
+  redis:
+    image: redis:3
+    container_name: taiga_redis
+    networks:
+      - back-tier
+
   postgres:
     image: postgres
     hostname: postgres
@@ -18,16 +32,35 @@ services:
       # - postgres-data
 
   docker_mail_server:
-    image: catatnight/postfix
+    image: juanluisbaptiste/postfix
     container_name: docker_mail_server
     networks:
       - back-tier
     ports:
       - ${EMAIL_PORT}:25
     environment:
-      maildomain: "taiga.io"
-      smtp_user: "${EMAIL_HOST_USER}:${EMAIL_HOST_PASSWORD}"
+      SMTP_SERVER: ${EMAIL_HOST}
+      SMTP_USERNAME: ${EMAIL_HOST_USER}
+      SMTP_PASSWORD: ${EMAIL_HOST_PASSWORD}
 
+  celery:
+    image: celery
+    networks:
+      - back-tier
+    depends_on:
+      - redis
+    environment:
+      CELERY_BROKER_URL: "redis://redis"
+
+  taiga-events:
+    build: docker-taiga-events
+    image: taiga-events
+    container_name: taiga_events
+    networks:
+      - back-tier
+    depends_on:
+      - rabbit
+  
   taiga:
     build: .
     container_name: taiga
@@ -40,7 +73,10 @@ services:
       - back-tier
     depends_on:
       - postgres
-      - docker_mail_server
+      - rabbit
+      - redis
+      - celery
+      - taiga-events
     environment:
       TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"
       # TAIGA_SLEEP haults Taiga from starting for 30 seconds,

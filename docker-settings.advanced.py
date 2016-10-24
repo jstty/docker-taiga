@@ -29,6 +29,25 @@ if os.getenv('TAIGA_SSL').lower() == 'true':
 
 SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 
+
+# if os.getenv('RABBIT_PORT') is not None and os.getenv('REDIS_PORT') is not None:
+from .celery import *
+
+# BROKER_URL = 'amqp://guest:guest@rabbit:5672/taiga/'
+BROKER_HOST = "rabbit"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "taiga"
+
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ENABLED = True
+
+# EVENTS_PUSH_BACKEND = "taiga.events.backends.postgresql.EventsPushBackend"
+EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
+EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://guest:guest@rabbit:5672/taiga/"}
+# EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://guest:guest@rabbit:5672"}
+
 #########################################
 ## GENERIC
 #########################################

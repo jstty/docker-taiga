@@ -93,7 +93,7 @@ else
 	fi
 
 	DEFAULT_DATA_DIR="./data"
-	TAIGA_DATA_DIR_P=$(prompt "${TAIGA_DATA_DIR-$DEFAULT_DATA_DIR}" "Frontend Hostname" --required "${DEFAULT_DATA_DIR}" )
+	export TAIGA_DATA_DIR=$(prompt "${TAIGA_DATA_DIR-$DEFAULT_DATA_DIR}" "Frontend Hostname" --required "${DEFAULT_DATA_DIR}" )
 	# create dir's
 	mkdir -p $TAIGA_DATA_DIR
 	mkdir -p $TAIGA_DATA_DIR/media
@@ -195,7 +195,7 @@ fi
 
 # convert to absolute path
 export TAIGA_DATA_DIR=`cd "$TAIGA_DATA_DIR"; pwd`
-	
+
 echo "--------------------------------------------"
 echo "Build Services..."
 echo "--------------------------------------------"

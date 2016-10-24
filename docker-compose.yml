@@ -18,9 +18,9 @@ services:
     hostname: postgres
     container_name: taiga_postgres
     environment:
-      POSTGRES_DB: taiga
-      POSTGRES_USER: taiga
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${TAIGA_DB_NAME}
+      POSTGRES_USER: ${TAIGA_DB_USER}
+      POSTGRES_PASSWORD: ${TAIGA_DB_PASSWORD}
     # ports:
     #   - 5432:5432
     networks:
@@ -76,10 +76,10 @@ services:
       # If you're using an external database you can remove this.
       TAIGA_SLEEP: 10
       # TAIGA_SSL=True # To enable SSL, uncomment this line
-      TAIGA_DB_HOST: localhost
-      TAIGA_DB_NAME: taiga
-      TAIGA_DB_USER: taiga
-      TAIGA_DB_PASSWORD: password
+      TAIGA_DB_HOST: postgres
+      TAIGA_DB_NAME: ${TAIGA_DB_NAME}
+      TAIGA_DB_USER: ${TAIGA_DB_USER}
+      TAIGA_DB_PASSWORD: ${TAIGA_DB_PASSWORD}
       EMAIL_HOST: ${EMAIL_HOST}
       GITHUB_URL: "https://github.com/"
       GITHUB_API_URL: "https://api.github.com/"

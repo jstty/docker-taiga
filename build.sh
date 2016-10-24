@@ -19,7 +19,7 @@ error () {
 }
 
 yesNoPrompt () {
-	read -p "$2 [Yes/No] (default: $1)?" -n 1 var
+	read -p "$2 [Yes/No] (default: $1)?" -n 1 choice
 	echo "" >&2
 	case "$choice" in 
   		y|Y ) echo "Yes";;
@@ -80,10 +80,10 @@ if [ "$CLEANUP_IMAGES" == "Yes" ]; then
 fi
 
 if [ -f "${ENV_FILE}" ]; then
-	USE_ENV=$(yesNoPrompt "Yes" "Do use env settings")
+	USE_ENV=$(yesNoPrompt "Yes" "Do you want to use the 'env.sh' settings")
 fi
 
-if [ "$USE_ENV" == "Yes" ]; then
+if [ "${USE_ENV}" == "Yes" ]; then
 	source ${ENV_FILE}
 else
 	export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "taiga.mysite.com" )
@@ -93,6 +93,10 @@ else
 	export EMAIL_PORT=$(prompt "25" "Email Port")
 	export EMAIL_HOST_USER=$(prompt "" "Email Login Username")
 	export EMAIL_HOST_PASSWORD=$(prompt "" "Email Login Password")
+
+	export TAIGA_DB_NAME=$(prompt "taiga" "Taiga DB Name")
+	export TAIGA_DB_USER=$(prompt "taiga" "Taiga DB Username")
+	export TAIGA_DB_PASSWORD=$(prompt "password" "Taiga DB Password")
 
 	EMAIL_USETLS=$(yesNoPrompt "No" "Email use TLS")
 	if [ "$EMAIL_USETLS" == "Yes" ]; then
@@ -125,6 +129,10 @@ echo "Email Port: $EMAIL_PORT"
 echo "Email Login User: $EMAIL_HOST_USER"
 echo "Email Login Password: $EMAIL_HOST_PASSWORD"
 
+echo "Taiga DB Name: $TAIGA_DB_NAME"
+echo "Taiga DB Username: $TAIGA_DB_USER"
+echo "Taiga DB Password: $TAIGA_DB_PASSWORD"
+
 echo "Github URL: $GITHUB_URL"
 echo "Github API URL: $GITHUB_API_URL"
 echo "Github API Client ID: $GITHUB_API_CLIENT_ID"
@@ -141,6 +149,10 @@ export EMAIL_HOST=$EMAIL_HOST
 export EMAIL_PORT=$EMAIL_PORT
 export EMAIL_HOST_USER=$EMAIL_HOST_USER
 export EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
+
+export TAIGA_DB_NAME=$TAIGA_DB_NAME
+export TAIGA_DB_USER=$TAIGA_DB_USER
+export TAIGA_DB_PASSWORD=$TAIGA_DB_PASSWORD
 
 export GITHUB_URL=$GITHUB_URL
 export GITHUB_API_URL=$GITHUB_API_URL

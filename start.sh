@@ -22,4 +22,4 @@ fi
 echo "--------------------------------------------"
 echo "Starting..."
 echo "--------------------------------------------"
-docker-compose up
+docker-compose up "$@"

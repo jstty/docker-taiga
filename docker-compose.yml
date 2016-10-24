@@ -15,7 +15,7 @@ services:
       - back-tier
     volumes:
       # - "${PWD}/database:/var/lib/postgresql/data"
-      - postgres-data:/var/lib/postgresql/data
+      - "${TAIGA_DATA_DIR}/db:/var/lib/postgresql/data"
 
   docker_mail_server:
     image: catatnight/postfix
@@ -65,17 +65,7 @@ services:
     volumes:
       # This ensures files uploaded to Taiga are not lost when recreating
       # your taiga container during upgrades
-      - taiga-media:/usr/src/taiga-back/media
-
-volumes:
-  postgres-data:
-    driver: local
-    driver_opts:
-      device: ./db-data
-  taiga-media:
-    driver: local
-    driver_opts:
-      device: ./taiga-media
+      - "${TAIGA_DATA_DIR}/media:/usr/src/taiga-back/media"
 
 networks:
   front-tier:

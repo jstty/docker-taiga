@@ -5,6 +5,8 @@
 : ${TAIGA_SLEEP:=0}
 sleep $TAIGA_SLEEP
 
+export HOSTIP=$(/sbin/ip route|awk '/default/ { print $3 }')
+
 # Setup database automatically if needed
 if [ -z "$TAIGA_SKIP_DB_CHECK" ]; then
   python /checkdb.py

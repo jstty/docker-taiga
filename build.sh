@@ -86,12 +86,38 @@ fi
 if [ "${USE_ENV}" == "Yes" ]; then
 	source ${ENV_FILE}
 else
-	HOST_IP=$(docker-machine ip)
+	if [ "$(uname)" == "Darwin" ]; then
+		HOST_IP=$(docker-machine ip)
+	else
+		HOST_IP=$(/sbin/ip route|awk '/default/ { print $3 }')
+	fi
+
+	DEFAULT_DATA_DIR="./data"
+	TAIGA_DATA_DIR_P=$(prompt "${TAIGA_DATA_DIR-$DEFAULT_DATA_DIR}" "Frontend Hostname" --required "${DEFAULT_DATA_DIR}" )
+	# get absolute path
+	export TAIGA_DATA_DIR=`cd "$TAIGA_DATA_DIR_P"; pwd`
+	# create dir's
+	mkdir -p $TAIGA_DATA_DIR
+	mkdir -p $TAIGA_DATA_DIR/media
+	mkdir -p $TAIGA_DATA_DIR/db
 
 	export TAIGA_PORT=$(prompt "${TAIGA_PORT-8000}" "Frontend Port")
 	export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "${HOST_IP}" )
 
-	export EMAIL_HOST=$(prompt "${HOST_IP}" "Email Hostname")
+	if [ "${EMAIL_USE_HOSTIP}" == "False" ]; then
+		EMAIL_USE_HOSTIP_DEFAULT="No"
+	else
+		EMAIL_USE_HOSTIP_DEFAULT="Yes"
+	fi
+	export EMAIL_USE_HOSTIP_P=$(yesNoPrompt "${EMAIL_USE_HOSTIP_DEFAULT}" "Use Host Machine as Email server")
+	if [ "$EMAIL_USE_HOSTIP_P" == "Yes" ]; then
+		export EMAIL_USE_HOSTIP="True"
+		export EMAIL_HOST=''
+	else
+		export EMAIL_USE_HOSTIP="False"
+		export EMAIL_HOST=$(prompt "${HOST_IP}" "Email Hostname")
+	fi
+
 	export EMAIL_PORT=$(prompt "25" "Email Port")
 	export EMAIL_HOST_USER=$(prompt "" "Email Login Username")
 	export EMAIL_HOST_PASSWORD=$(prompt "" "Email Login Password")
@@ -125,6 +151,7 @@ echo "--------------------------------------------"
 echo "Hostname: $TAIGA_HOST"
 echo "Port: $TAIGA_PORT"
 
+echo "Email use HostIP: $EMAIL_USE_HOSTIP"
 echo "Email use TLS: $EMAIL_USE_TLS"
 echo "Email Hostname: $EMAIL_HOST"
 echo "Email Port: $EMAIL_PORT"
@@ -146,6 +173,7 @@ cat >${ENV_FILE} <<EOL
 export TAIGA_HOST=$TAIGA_HOST
 export TAIGA_PORT=$TAIGA_PORT
 
+export EMAIL_USE_HOSTIP=$EMAIL_USE_HOSTIP
 export EMAIL_USE_TLS=$EMAIL_USE_TLS
 export EMAIL_HOST=$EMAIL_HOST
 export EMAIL_PORT=$EMAIL_PORT

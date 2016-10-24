@@ -28,6 +28,3 @@ if [ -d "docker-taiga-events" ]; then
 else
 	git clone https://github.com/benhutchins/docker-taiga-events.git docker-taiga-events
 fi
-
-mkdir -p db-data
-mkdir -p taiga-media

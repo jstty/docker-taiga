@@ -56,25 +56,8 @@ prompt () {
 	return 0
 }
 
-if [ -f "${ENV_FILE}" ]; then
-	USE_ENV=$(yesNoPrompt "Yes" "Do use env settings")
-	if [ "$USE_ENV" = "Yes" ]; then
-		source ${USE_ENV};
-
-		echo "--------------------------------------------"
-		echo "Build Services..."
-		echo "--------------------------------------------"
-		docker-compose build
-
-		echo "--------------------------------------------"
-		echo "Creating Containers..."
-		echo "--------------------------------------------"
-		docker-compose create
-	fi
-fi
-
 CLEANUP_CONTAINERS=$(yesNoPrompt "No" "Do you want to stop and remove Taiga services")
-if [ "$CLEANUP_CONTAINERS" = "Yes" ]; then
+if [ "$CLEANUP_CONTAINERS" == "Yes" ]; then
 	# # Stop all containers
 	# docker stop $(docker ps -a -q)
 	# # Delete all containers
@@ -87,7 +70,7 @@ if [ "$CLEANUP_CONTAINERS" = "Yes" ]; then
 fi
 
 CLEANUP_IMAGES=$(yesNoPrompt "No" "Do you want to remove Taiga images before we start")
-if [ "$CLEANUP_IMAGES" = "Yes" ]; then
+if [ "$CLEANUP_IMAGES" == "Yes" ]; then
 	# # Delete all images
 	# docker rmi $(docker images -q)
 
@@ -96,33 +79,40 @@ if [ "$CLEANUP_IMAGES" = "Yes" ]; then
 	docker rmi taiga
 fi
 
-
-export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "taiga.mysite.com" )
-export TAIGA_PORT=$(prompt "${TAIGA_PORT-8000}" "Frontend Port")
-
-export EMAIL_HOST=$(prompt "$(docker-machine ip)" "Email Hostname")
-export EMAIL_PORT=$(prompt "25" "Email Port")
-export EMAIL_HOST_USER=$(prompt "" "Email Login Username")
-export EMAIL_HOST_PASSWORD=$(prompt "" "Email Login Password")
-
-EMAIL_USETLS=$(yesNoPrompt "No" "Email use TLS")
-if [ "$EMAIL_USETLS" = "Yes" ]; then
-	export EMAIL_USE_TLS="True"
-else
-	export EMAIL_USE_TLS="False"
+if [ -f "${ENV_FILE}" ]; then
+	USE_ENV=$(yesNoPrompt "Yes" "Do use env settings")
 fi
 
-GITHUB=$(yesNoPrompt "No" "Github Integration")
-if [ "$GITHUB" = "Yes" ]; then
-	export GITHUB_URL=$(prompt "https://github.com/" "Github URL")
-	export GITHUB_API_URL=$(prompt "https://api.github.com/" "Github API URL")
-	export GITHUB_API_CLIENT_ID=$(prompt "$GITHUB_API_CLIENT_ID" "Github API Client ID" --required "yourClientId")
-	export GITHUB_API_CLIENT_SECRET=$(prompt "$GITHUB_API_CLIENT_SECRET" "Github API Client Secret" --required "yourClientSecret")
+if [ "$USE_ENV" == "Yes" ]; then
+	source ${ENV_FILE}
 else
-	export GITHUB_URL=""
-	export GITHUB_API_URL=""
-	export GITHUB_API_CLIENT_ID=""
-	export GITHUB_API_CLIENT_SECRET=""
+	export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "taiga.mysite.com" )
+	export TAIGA_PORT=$(prompt "${TAIGA_PORT-8000}" "Frontend Port")
+
+	export EMAIL_HOST=$(prompt "$(docker-machine ip)" "Email Hostname")
+	export EMAIL_PORT=$(prompt "25" "Email Port")
+	export EMAIL_HOST_USER=$(prompt "" "Email Login Username")
+	export EMAIL_HOST_PASSWORD=$(prompt "" "Email Login Password")
+
+	EMAIL_USETLS=$(yesNoPrompt "No" "Email use TLS")
+	if [ "$EMAIL_USETLS" == "Yes" ]; then
+		export EMAIL_USE_TLS="True"
+	else
+		export EMAIL_USE_TLS="False"
+	fi
+
+	GITHUB=$(yesNoPrompt "No" "Github Integration")
+	if [ "$GITHUB" == "Yes" ]; then
+		export GITHUB_URL=$(prompt "https://github.com/" "Github URL")
+		export GITHUB_API_URL=$(prompt "https://api.github.com/" "Github API URL")
+		export GITHUB_API_CLIENT_ID=$(prompt "$GITHUB_API_CLIENT_ID" "Github API Client ID" --required "yourClientId")
+		export GITHUB_API_CLIENT_SECRET=$(prompt "$GITHUB_API_CLIENT_SECRET" "Github API Client Secret" --required "yourClientSecret")
+	else
+		export GITHUB_URL=""
+		export GITHUB_API_URL=""
+		export GITHUB_API_CLIENT_ID=""
+		export GITHUB_API_CLIENT_SECRET=""
+	fi
 fi
 
 echo "--------------------------------------------"
@@ -141,6 +131,7 @@ echo "Github API Client ID: $GITHUB_API_CLIENT_ID"
 echo "Github API Client Secret: $GITHUB_API_CLIENT_SECRET"
 echo "--------------------------------------------"
 
+if [ "$USE_ENV" != "Yes" ]; then
 cat >${ENV_FILE} <<EOL
 export TAIGA_HOST=$TAIGA_HOST
 export TAIGA_PORT=$TAIGA_PORT
@@ -157,6 +148,9 @@ export GITHUB_API_CLIENT_ID=$GITHUB_API_CLIENT_ID
 export GITHUB_API_CLIENT_SECRET=$GITHUB_API_CLIENT_SECRET
 EOL
 
+	# change file permin so it's executable
+	chmod +x ${ENV_FILE}
+fi
 
 echo "--------------------------------------------"
 echo "Build Services..."

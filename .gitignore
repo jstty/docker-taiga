@@ -1,1 +1,4 @@
 env.sh
+taiga-back
+taiga-front-dist
+taiga-events

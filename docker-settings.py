@@ -20,7 +20,7 @@ SITES['front']['domain'] = TAIGA_HOSTNAME
 MEDIA_URL  = 'http://' + TAIGA_HOSTNAME + '/media/'
 STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 
-if os.getenv('TAIGA_SSL').lower() == 'true':
+if os.getenv('TAIGA_SSL'):
     SITES['api']['scheme'] = 'https'
     SITES['front']['scheme'] = 'https'
 
@@ -45,8 +45,8 @@ SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
-if os.getenv('EMAIL_USE_HOSTIP') not None and os.getenv('EMAIL_USE_HOSTIP') == 'true':
-    EMAIL_HOST = os.getenv('HOSTIP');
+if os.getenv('EMAIL_USE_HOSTIP'):
+    EMAIL_HOST = os.getenv('HOSTIP')
 else:
     EMAIL_HOST = os.getenv('EMAIL_HOST')
 

@@ -23,8 +23,8 @@ fi
 echo "--------------------------------------------"
 echo "Cloning Frontend..."
 echo "--------------------------------------------"
-if [ -d "docker-taiga-events" ]; then
+if [ -d "taiga-events" ]; then
 	echo "Already cloned"
 else
-	git clone https://github.com/benhutchins/docker-taiga-events.git docker-taiga-events
+	git clone https://github.com/taigaio/taiga-events taiga-events
 fi

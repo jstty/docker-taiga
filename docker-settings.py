@@ -45,7 +45,7 @@ SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
-if os.getenv('EMAIL_USE_HOSTIP').lower() == 'true':
+if os.getenv('EMAIL_USE_HOSTIP') not None and os.getenv('EMAIL_USE_HOSTIP') == 'true':
     EMAIL_HOST = os.getenv('HOSTIP');
 else:
     EMAIL_HOST = os.getenv('EMAIL_HOST')

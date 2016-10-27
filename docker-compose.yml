@@ -35,7 +35,7 @@ services:
       # this gives the database container time to initialize.
       # If you're using an external database you can remove this.
       TAIGA_SLEEP: 10
-      TAIGA_SSL=True # To enable SSL, uncomment this line
+      TAIGA_SSL: "True" # To enable SSL, uncomment this line
       
       TAIGA_DB_HOST: postgres
       TAIGA_DB_NAME: ${TAIGA_DB_NAME}

@@ -23,11 +23,11 @@ STATIC_URL = 'http://' + TAIGA_HOSTNAME + '/static/'
 if os.getenv('TAIGA_SSL'):
     SITES['api']['scheme'] = 'https'
     SITES['front']['scheme'] = 'https'
-
     MEDIA_URL  = 'https://' + TAIGA_HOSTNAME + '/media/'
     STATIC_URL = 'https://' + TAIGA_HOSTNAME + '/static/'
 
-SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
+if os.getenv('TAIGA_SECRET_KEY'):
+    SECRET_KEY = os.getenv('TAIGA_SECRET_KEY')
 
 #########################################
 ## GENERIC

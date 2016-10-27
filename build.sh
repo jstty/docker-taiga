@@ -148,6 +148,7 @@ fi
 echo "--------------------------------------------"
 echo "Hostname: $TAIGA_HOST"
 echo "Port: $TAIGA_PORT"
+echo "Data Path: $TAIGA_DATA_DIR"
 
 echo "Email use HostIP: $EMAIL_USE_HOSTIP"
 echo "Email use TLS: $EMAIL_USE_TLS"
@@ -170,6 +171,7 @@ if [ "$USE_ENV" != "Yes" ]; then
 cat >${ENV_FILE} <<EOL
 export TAIGA_HOST=$TAIGA_HOST
 export TAIGA_PORT=$TAIGA_PORT
+export TAIGA_DATA_DIR=$TAIGA_DATA_DIR
 
 export EMAIL_USE_HOSTIP=$EMAIL_USE_HOSTIP
 export EMAIL_USE_TLS=$EMAIL_USE_TLS

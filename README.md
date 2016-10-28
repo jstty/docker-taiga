@@ -26,10 +26,8 @@ $ ./start.sh
 $ ./stop.sh
 ```
 
-
-
-
-
+# login to running container shell
+docker exec -it taiga /bin/bash -c "export TERM=xterm; exec bash"
 
 
 

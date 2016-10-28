@@ -43,8 +43,6 @@ services:
     networks:
       - front-tier
       - back-tier
-    extra_hosts:
-      - events:taiga-events
     depends_on:
       - postgres
       - taiga-events

@@ -1,6 +1,14 @@
 version: '2'
 
 services:
+  rabbit:
+    image: rabbitmq:3
+    container_name: taiga_rabbit
+    networks:
+      - back-tier
+    environment:
+      RABBITMQ_DEFAULT_VHOST: taiga
+
   postgres:
     image: postgres
     hostname: postgres
@@ -14,8 +22,16 @@ services:
     networks:
       - back-tier
     volumes:
-      # - "${PWD}/database:/var/lib/postgresql/data"
       - "${TAIGA_DATA_DIR}/db:/var/lib/postgresql/data"
+
+  taiga-events:
+    build: ./taiga-events
+    image: taiga-events
+    container_name: taiga_events
+    networks:
+      - back-tier
+    depends_on:
+      - rabbit
 
   taiga:
     build: .
@@ -29,6 +45,7 @@ services:
       - back-tier
     depends_on:
       - postgres
+      - taiga-events
     environment:
       TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"
       # TAIGA_SLEEP haults Taiga from starting for 30 seconds,

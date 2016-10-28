@@ -20,8 +20,8 @@ RUN set -x; \
 
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 
-COPY taiga-back /usr/src/taiga-back
-COPY taiga-front-dist/ /usr/src/taiga-front-dist
+COPY taiga-back/src/ /usr/src/taiga-back
+COPY taiga-front-dist/src/ /usr/src/taiga-front-dist
 COPY docker-settings.py /usr/src/taiga-back/settings/docker.py
 COPY conf/locale.gen /etc/locale.gen
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf

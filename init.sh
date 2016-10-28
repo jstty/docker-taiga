@@ -5,26 +5,32 @@ echo "Taiga Init..."
 echo "--------------------------------------------"
 echo "Cloning Backend..."
 echo "--------------------------------------------"
-if [ -d "taiga-back" ]; then
+if [ -d "./taiga-back/src" ]; then
 	echo "Already cloned"
 else
-	git clone https://github.com/taigaio/taiga-back.git taiga-back
+	cd taiga-back
+	git clone https://github.com/taigaio/taiga-back.git src
+	cd ..
 fi
 
 echo "--------------------------------------------"
 echo "Cloning Frontend..."
 echo "--------------------------------------------"
-if [ -d "taiga-front-dist" ]; then
+if [ -d "./taiga-front-dist/src" ]; then
 	echo "Already cloned"
 else
-	git clone https://github.com/taigaio/taiga-front-dist.git taiga-front-dist
+	cd taiga-front-dist
+	git clone https://github.com/taigaio/taiga-front-dist.git src
+	cd ..
 fi
 
 echo "--------------------------------------------"
 echo "Cloning Frontend..."
 echo "--------------------------------------------"
-if [ -d "taiga-events" ]; then
+if [ -d "./taiga-events/src" ]; then
 	echo "Already cloned"
 else
-	git clone https://github.com/taigaio/taiga-events taiga-events
+	cd taiga-events
+	git clone https://github.com/taigaio/taiga-events src
+	cd ..
 fi

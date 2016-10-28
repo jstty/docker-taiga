@@ -1,4 +1,4 @@
 env.sh
-taiga-back
-taiga-front-dist
-taiga-events
+taiga-back/src
+taiga-front-dist/src
+taiga-events/src

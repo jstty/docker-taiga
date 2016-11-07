@@ -31,7 +31,7 @@ COPY conf/nginx/taiga-events.conf /etc/nginx/taiga-events.conf
 
 # generate ssl self-signed cert
 RUN mkdir -p /etc/nginx/ssl
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.crt
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.crt -batch
 
 
 # Setup symbolic links for configuration files

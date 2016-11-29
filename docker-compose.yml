@@ -47,6 +47,8 @@ services:
       - postgres
       - taiga-events
     environment:
+      TAIGA_HOST: ${TAIGA_HOST}
+      TAIGA_PORT: ${TAIGA_PORT}
       TAIGA_HOSTNAME: "${TAIGA_HOST}:${TAIGA_PORT}"
       # TAIGA_SLEEP haults Taiga from starting for 30 seconds,
       # this gives the database container time to initialize.

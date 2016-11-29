@@ -102,6 +102,14 @@ else
 	export TAIGA_PORT=$(prompt "${TAIGA_PORT-8000}" "Frontend Port")
 	export TAIGA_HOST=$(prompt "$TAIGA_HOST" "Frontend Hostname" --required "${HOST_IP}" )
 
+	TAIGA_SSL_Q=$(yesNoPrompt "No" "Use SSL")
+	if [ "$TAIGA_SSL_Q" == "Yes" ]; then
+		export TAIGA_SSL="True"
+	else
+		export TAIGA_SSL="False"
+	fi
+
+
 	if [ "${EMAIL_USE_HOSTIP}" == "False" ]; then
 		EMAIL_USE_HOSTIP_DEFAULT="No"
 	else
@@ -149,6 +157,7 @@ echo "--------------------------------------------"
 echo "Hostname: $TAIGA_HOST"
 echo "Port: $TAIGA_PORT"
 echo "Data Path: $TAIGA_DATA_DIR"
+echo "Use SSL: $TAIGA_SSL"
 
 echo "Email use HostIP: $EMAIL_USE_HOSTIP"
 echo "Email use TLS: $EMAIL_USE_TLS"
